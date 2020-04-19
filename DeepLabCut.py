@@ -85,8 +85,8 @@ deeplabcut.analyze_videos(path_config, ['/home/amr/Trial_DeepLabCut/mouse.avi'],
 
 # In[26]:
 
-
-deeplabcut.create_labeled_video(path_config, ['/home/amr/Trial_DeepLabCut/mouse.avi'])
+#to created trailpoints 
+deeplabcut.create_labeled_video(path_config, ['/home/amr/Trial_DeepLabCut/mouse.avi'], trailpoints=10)
 
 
 # In[27]:
