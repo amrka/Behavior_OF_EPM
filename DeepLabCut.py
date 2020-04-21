@@ -91,7 +91,7 @@ deeplabcut.create_labeled_video(path_config, ['/home/amr/Trial_DeepLabCut/mouse.
 
 # In[27]:
 
-
+#adding save_frames consumes a massive amount of time and it only creates the video as frames
 deeplabcut.create_labeled_video(path_config, ['/home/amr/Trial_DeepLabCut/mouse.avi'], save_frames=True)
 
 
