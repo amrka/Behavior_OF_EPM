@@ -74,7 +74,7 @@ deeplabcut.train_network(path_config, saveiters='1000', displayiters='1')
 # In[14]:
 
 
-deeplabcut.evaluate_network(path_config, plotting=True)
+deeplabcut.evaluate_network(path_config, plotting=True, show_errors=True)
 
 
 # In[15]:
