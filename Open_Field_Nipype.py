@@ -495,5 +495,5 @@ Open_Field_workflow.connect ([
 
 Open_Field_workflow.write_graph(graph2use='flat')
 # Open_Field_workflow.run('MultiProc', plugin_args={'n_procs': 16})
-Open_Field_workflow.run(plugin='SLURM',plugin_args={'dont_resubmit_completed_jobs': True, 'max_jobs':50, 'partition': 'gpu'})
+Open_Field_workflow.run(plugin='SLURM',plugin_args={'dont_resubmit_completed_jobs': True, 'max_jobs':50, 'sbatch_args': '-p gpu'})
 
