@@ -11,6 +11,10 @@ cp  */*.csv .
 
 awk '(NR == 1) || (FNR > 1)' open_field_*.csv > open_field.csv
 
+# delete the files to clean up the folder
+rm /media/amr/Amr_4TB/Work/October_Acquistion/Open_Field_output/open_field_???metrics.csv
+
+#---------------------------------------------------------------------------
 # The same with plus maze
 
 cd /media/amr/Amr_4TB/Work/October_Acquistion/Plus_Maze_output
@@ -18,4 +22,7 @@ cd /media/amr/Amr_4TB/Work/October_Acquistion/Plus_Maze_output
 cp */*.csv .
 
 awk '(NR == 1) || (FNR > 1)' plus_maze_*.csv > plus_maze.csv
+
+# delete the files to clean up the folder
+rm /media/amr/Amr_4TB/Work/October_Acquistion/Plus_Maze_output/plus_maze_???metrics.csv
 
