@@ -1,4 +1,4 @@
-#analyzing plus maze behavior video
+#analyzing open_field behavior video
 from nipype import config
 cfg = dict(execution={'remove_unnecessary_outputs': False})
 config.update_config(cfg)
@@ -27,7 +27,7 @@ experiment_dir = '/home/in/aeed/Work/October_Acquistion/'
 #                 '263', '264', '273', '274', 
 #                 '281', '282', '286', '287', 
 #                 '362', '363', '364', '365', 
-#                 '366']
+#                 '366', '236', '271', '272']
 
 # subject_list = ['229', '230', '365', '274']
                 
