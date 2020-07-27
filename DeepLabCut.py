@@ -74,7 +74,7 @@ deeplabcut.train_network(path_config, saveiters='1000', displayiters='1')
 # In[14]:
 
 
-deeplabcut.evaluate_network(path_config)
+deeplabcut.evaluate_network(path_config, plotting=True, show_errors=True)
 
 
 # In[15]:
@@ -85,13 +85,13 @@ deeplabcut.analyze_videos(path_config, ['/home/amr/Trial_DeepLabCut/mouse.avi'],
 
 # In[26]:
 
-
-deeplabcut.create_labeled_video(path_config, ['/home/amr/Trial_DeepLabCut/mouse.avi'])
+#to created trailpoints 
+deeplabcut.create_labeled_video(path_config, ['/home/amr/Trial_DeepLabCut/mouse.avi'], trailpoints=10)
 
 
 # In[27]:
 
-
+#adding save_frames consumes a massive amount of time and it only creates the video as frames
 deeplabcut.create_labeled_video(path_config, ['/home/amr/Trial_DeepLabCut/mouse.avi'], save_frames=True)
 
 
