@@ -18,19 +18,19 @@ import os
 #------------------------------------------------------------------------------------------------------------------
 # In[2]:
 
-experiment_dir = '/home/in/aeed/Work/October_Acquistion/' 
+experiment_dir = '/home/in/aeed/Work/October_Acquistion/'
 
-subject_list = ['229', '230', '232', '233', 
-                '234', '235', '237', '242', 
-                '243', '244', '245', '252', 
-                '253', '255', '261', '262', 
-                '263', '264', '273', '274', 
-                '281', '282', '286', '287', 
-                '362', '363', '364', '365', 
+subject_list = ['229', '230', '232', '233',
+                '234', '235', '237', '242',
+                '243', '244', '245', '252',
+                '253', '255', '261', '262',
+                '263', '264', '273', '274',
+                '281', '282', '286', '287',
+                '362', '363', '364', '365',
                 '366', '236', '271', '272']
 
 # subject_list = ['229', '230', '365', '274']
-                
+
 # subject_list = ['230', '365']
 
 
@@ -89,7 +89,7 @@ def deeplabcut(video):
 
         deeplabcut.analyze_videos(path_config, [video], save_as_csv=True)
 
-        deeplabcut.create_labeled_video(path_config, [video])
+        deeplabcut.create_labeled_video(path_config, [video], trailpoints=10)
 
 
         h5_file = os.path.abspath(glob.glob('plus_maze_*.h5')[0])
@@ -113,7 +113,7 @@ def deeplabcut(video):
         return  h5_file, labeled_video
 
 
-          
+
 
 
 deeplabcut = Node(name = 'DeepLabCut',
@@ -137,9 +137,9 @@ def draw_trajectory(h5_file, video):
 		import matplotlib
 		import pandas as pd
 		import numpy as np
-		import cv2 
+		import cv2
 		import glob
-		np.set_printoptions(suppress=True) 
+		np.set_printoptions(suppress=True)
 
 		#Get fps to use it for indexing, we need only 10 min from beg
 		#so the indexing will be from 0:
@@ -147,7 +147,7 @@ def draw_trajectory(h5_file, video):
 
 		fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-		ten_min = 10 * 60 * fps #number of frames in 10 min to use as an index  
+		ten_min = 10 * 60 * fps #number of frames in 10 min to use as an index
 
 		filename_without_ext = os.path.splitext(os.path.basename(video))[0]
 
@@ -192,10 +192,10 @@ def draw_density_map(h5_file, video):
 		import matplotlib
 		import pandas as pd
 		import numpy as np
-		import cv2 
+		import cv2
 		import glob
-		from scipy.stats import kde 
-		np.set_printoptions(suppress=True) 
+		from scipy.stats import kde
+		np.set_printoptions(suppress=True)
 
 		#Get fps to use it for indexing, we need only 10 min from beg
 		#so the indexing will be from 0:
@@ -203,7 +203,7 @@ def draw_density_map(h5_file, video):
 
 		fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-		ten_min = 10 * 60 * fps #number of frames in 10 min to use as an index  
+		ten_min = 10 * 60 * fps #number of frames in 10 min to use as an index
 
 		filename_without_ext = os.path.splitext(os.path.basename(video))[0]
 
@@ -223,7 +223,7 @@ def draw_density_map(h5_file, video):
 
 
 		# Evaluate a gaussian kde on a regular grid of nbins x nbins over data extents
-		nbins=300 #300 is a very good compromise both computationally and aesthetically 
+		nbins=300 #300 is a very good compromise both computationally and aesthetically
 		k = kde.gaussian_kde([x,y])
 		xi, yi = np.mgrid[x.min():x.max():nbins*1j, y.min():y.max():nbins*1j]
 		zi = k(np.vstack([xi.flatten(), yi.flatten()]))
@@ -254,11 +254,11 @@ def get_metrics(h5_file, video):
 		import matplotlib
 		import pandas as pd
 		import numpy as np
-		import cv2 
+		import cv2
 		import csv
 		import glob
 
-		np.set_printoptions(suppress=True) 
+		np.set_printoptions(suppress=True)
 
 		#Get fps to use it for indexing, we need only 10 min from beg
 		#so the indexing will be from 0:
@@ -266,9 +266,9 @@ def get_metrics(h5_file, video):
 
 		fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-		success,image = cap.read() #an image to use as a background 
+		success,image = cap.read() #an image to use as a background
 
-		ten_min = 10 * 60 * fps #number of frames in 10 min to use as an index  
+		ten_min = 10 * 60 * fps #number of frames in 10 min to use as an index
 
 		filename_without_ext = os.path.splitext(os.path.basename(video))[0]
 
@@ -293,15 +293,15 @@ def get_metrics(h5_file, video):
 	    #aka each two corresponding rows are two consecutive frames
 	    #I tried to do it with euclidean distance in scipy, but it is more computationally expensive
 	    #and gives exactly the same result
-		Z1 = Z[0:-1]  
+		Z1 = Z[0:-1]
 		Z2 = Z[1:, :]
-	    
+
 	    #the euclidean distance formula:  dist((x, y), (a, b)) = √(x - a)² + (y - b)²
 		diff = (Z1 - Z2)
 
 		squared = diff**2
 		sumed = np.sum(squared, axis=1)
-		distances = np.sqrt(sumed) 
+		distances = np.sqrt(sumed)
 		#from the calibration of the video, we know that 216pixels = 50cm aka 1cm=4.32pixel
 		total_distance = np.sum(distances) #pixels
 		total_distance = total_distance / 4.32 #cm
@@ -379,7 +379,7 @@ def get_metrics(h5_file, video):
 		sec_in_center = len(x[inside]) / fps
 
 		sec_in_arm1 = len(x[outside][x < mean[0]][y > mean[1]]) / fps #red arm
-		sec_in_arm2 = len(x[outside][x < mean[0]][y < mean[1]]) / fps #magenta  
+		sec_in_arm2 = len(x[outside][x < mean[0]][y < mean[1]]) / fps #magenta
 		sec_in_arm3 = len(x[outside][x > mean[0]][y < mean[1]]) / fps #yellow
 		sec_in_arm4 = len(x[outside][x > mean[0]][y > mean[1]]) / fps #green
 
@@ -387,20 +387,20 @@ def get_metrics(h5_file, video):
 		time_in_center_percentage = (time_in_center * fps) / len(x)
 
 		time_in_opened_arms = sec_in_arm2 + sec_in_arm4
-		time_in_opened_arms_percentage = (time_in_opened_arms * fps)/ len(x) 
+		time_in_opened_arms_percentage = (time_in_opened_arms * fps)/ len(x)
 
 
 		time_in_closed_arms = sec_in_arm1 + sec_in_arm3
 		time_in_closed_arms_percentage = (time_in_closed_arms * fps) / len(x)
 
 		#open/close time ratio
-		opened_to_closed_ratio = time_in_opened_arms/time_in_closed_arms 
+		opened_to_closed_ratio = time_in_opened_arms/time_in_closed_arms
 
 		############################################################################################
 		#write to a csv file
 		import csv
 
-		csvRow = [filename_without_ext, fps, total_distance, velocity, time_in_center, time_in_center_percentage, 
+		csvRow = [filename_without_ext, fps, total_distance, velocity, time_in_center, time_in_center_percentage,
 		         time_in_opened_arms, time_in_opened_arms_percentage,
 		         time_in_closed_arms, time_in_closed_arms_percentage, opened_to_closed_ratio]
 
@@ -409,7 +409,7 @@ def get_metrics(h5_file, video):
 
 		with open(csvfile, "a") as fp:
 		    wr = csv.writer(fp, dialect='excel')
-		    wr.writerow(['filename_without_ext', 'fps', 'total_distance', 'velocity', 'time_in_center', 'time_in_center_percentage', 
+		    wr.writerow(['filename_without_ext', 'fps', 'total_distance', 'velocity', 'time_in_center', 'time_in_center_percentage',
 		         'time_in_opened_arms', 'time_in_opened_arms_percentage',
 		         'time_in_closed_arms', 'time_in_closed_arms_percentage', 'opened_to_closed_ratio'])
 
@@ -460,7 +460,7 @@ Plus_Maze_workflow.connect ([
       (draw_density_map, datasink, [('density_map','@density_map')]),
 
 
-      (deeplabcut, get_metrics, [('h5_file','h5_file')]),	
+      (deeplabcut, get_metrics, [('h5_file','h5_file')]),
 
       (selectfiles, get_metrics, [('plus_maze','video')]),
 

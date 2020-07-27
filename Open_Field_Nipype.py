@@ -18,19 +18,19 @@ import os
 #------------------------------------------------------------------------------------------------------------------
 # In[2]:
 
-experiment_dir = '/home/in/aeed/Work/October_Acquistion/' 
+experiment_dir = '/home/in/aeed/Work/October_Acquistion/'
 
-# subject_list = ['229', '230', '232', '233', 
-#                 '234', '235', '237', '242', 
-#                 '243', '244', '245', '252', 
-#                 '253', '255', '261', '262', 
-#                 '263', '264', '273', '274', 
-#                 '281', '282', '286', '287', 
-#                 '362', '363', '364', '365', 
+# subject_list = ['229', '230', '232', '233',
+#                 '234', '235', '237', '242',
+#                 '243', '244', '245', '252',
+#                 '253', '255', '261', '262',
+#                 '263', '264', '273', '274',
+#                 '281', '282', '286', '287',
+#                 '362', '363', '364', '365',
 #                 '366', '236', '271', '272']
 
 # subject_list = ['229', '230', '365', '274']
-                
+
 subject_list = ['230']
 
 
@@ -89,7 +89,7 @@ def deeplabcut(video):
 
         deeplabcut.analyze_videos(path_config, [video], save_as_csv=True)
 
-        deeplabcut.create_labeled_video(path_config, [video])
+        deeplabcut.create_labeled_video(path_config, [video], trailpoints=10)
 
 
         h5_file = os.path.abspath(glob.glob('open_field_*.h5')[0])
@@ -113,7 +113,7 @@ def deeplabcut(video):
         return  h5_file, labeled_video
 
 
-          
+
 
 
 deeplabcut = Node(name = 'DeepLabCut',
@@ -133,9 +133,9 @@ def draw_trajectory(h5_file, video):
         import matplotlib
         import pandas as pd
         import numpy as np
-        import cv2 
+        import cv2
         import glob
-        np.set_printoptions(suppress=True) 
+        np.set_printoptions(suppress=True)
 
         #Get fps to use it for indexing, we need only 30 min from beg
         #so the indexing will be from 0:
@@ -143,7 +143,7 @@ def draw_trajectory(h5_file, video):
 
         fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-        thirty_min = 30 * 60 * fps #number of frames in 30 min to use as an index  
+        thirty_min = 30 * 60 * fps #number of frames in 30 min to use as an index
 
         filename_without_ext = os.path.splitext(os.path.basename(video))[0]
 
@@ -187,10 +187,10 @@ def draw_density_map(h5_file, video):
         import matplotlib
         import pandas as pd
         import numpy as np
-        import cv2 
+        import cv2
         import glob
-        from scipy.stats import kde 
-        np.set_printoptions(suppress=True) 
+        from scipy.stats import kde
+        np.set_printoptions(suppress=True)
 
         #Get fps to use it for indexing, we need only 30 min from beg
         #so the indexing will be from 0:
@@ -198,7 +198,7 @@ def draw_density_map(h5_file, video):
 
         fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-        thirty_min = 30 * 60 * fps #number of frames in 30 min to use as an index  
+        thirty_min = 30 * 60 * fps #number of frames in 30 min to use as an index
 
         filename_without_ext = os.path.splitext(os.path.basename(video))[0]
 
@@ -218,7 +218,7 @@ def draw_density_map(h5_file, video):
 
 
         # Evaluate a gaussian kde on a regular grid of nbins x nbins over data exthirtyts
-        nbins=300 #300 is a very good compromise both computationally and aesthetically 
+        nbins=300 #300 is a very good compromise both computationally and aesthetically
         k = kde.gaussian_kde([x,y])
         xi, yi = np.mgrid[x.min():x.max():nbins*1j, y.min():y.max():nbins*1j]
         zi = k(np.vstack([xi.flatten(), yi.flatten()]))
@@ -247,11 +247,11 @@ def get_metrics(h5_file, video):
         import matplotlib
         import pandas as pd
         import numpy as np
-        import cv2 
+        import cv2
         import csv
         import glob
 
-        np.set_printoptions(suppress=True) 
+        np.set_printoptions(suppress=True)
 
         #Get fps to use it for indexing, we need only 10 min from beg
         #so the indexing will be from 0:
@@ -259,9 +259,9 @@ def get_metrics(h5_file, video):
 
         fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-        success,image = cap.read() #an image to use as a background 
+        success,image = cap.read() #an image to use as a background
 
-        thirty_min = 30 * 60 * fps #number of frames in 30 min to use as an index  
+        thirty_min = 30 * 60 * fps #number of frames in 30 min to use as an index
 
         filename_without_ext = os.path.splitext(os.path.basename(video))[0]
 
@@ -286,19 +286,19 @@ def get_metrics(h5_file, video):
         #aka each two corresponding rows are two consecutive frames
         #I tried to do it with euclidean distance in scipy, but it is more computationally expensive
         #and gives exactly the same result
-        Z1 = Z[0:-1]  
+        Z1 = Z[0:-1]
         Z2 = Z[1:, :]
-        
+
         #the euclidean distance formula:  dist((x, y), (a, b)) = √(x - a)² + (y - b)²
         diff = (Z1 - Z2)
-        
+
         squared = diff**2
         sumed = np.sum(squared, axis=1)
-        distances = np.sqrt(sumed) 
+        distances = np.sqrt(sumed)
         #from the calibration of the video, we know that 216pixels = 50cm aka 1cm=4.32pixel
         total_distance = np.sum(distances) #pixels
         total_distance = total_distance / 4.32 #cm
-      
+
 
 
       ################################################################################################################
@@ -306,29 +306,29 @@ def get_metrics(h5_file, video):
         no_of_frames = Z.shape[0]
         no_of_sec = no_of_frames / fps
         velocity = total_distance / no_of_sec #velocity cm/sec
-        
+
 
         #################################################################################################################
 
         plt.figure(figsize=(8,6), dpi=300)
         plt.plot(x,y, color='k', linewidth=1)
         plt.axis('off')
-        #plot all the frames 
+        #plot all the frames
         plt.plot(x,y, 'b.')
-        #the same as the one above, but connecting them together helps me to see 
+        #the same as the one above, but connecting them together helps me to see
         #if I am missing something
-        plt.plot(x,y, 'b-', alpha=0.2) 
+        plt.plot(x,y, 'b-', alpha=0.2)
 
         #get the center point by averaging the extreme points from the edges of the box
         mean = np.mean([Z.max(axis=0), Z.min(axis=0)], axis=0)
-        
+
         #plot the mean point as an indication I am in the correct way
         plt.plot(mean[0],mean[1], 'ko')
-        
+
         #plot the two main diagonals
-        plt.plot((Z.max(axis=0)[0], Z.min(axis=0)[0]), (Z.min(axis=0)[1], Z.max(axis=0)[1]),'r', lw=1.5) 
-        plt.plot((Z.max(axis=0)[0], Z.min(axis=0)[0]), (Z.max(axis=0)[1], Z.min(axis=0)[1]),'r', lw=1.5) 
-        
+        plt.plot((Z.max(axis=0)[0], Z.min(axis=0)[0]), (Z.min(axis=0)[1], Z.max(axis=0)[1]),'r', lw=1.5)
+        plt.plot((Z.max(axis=0)[0], Z.min(axis=0)[0]), (Z.max(axis=0)[1], Z.min(axis=0)[1]),'r', lw=1.5)
+
 
         #get the coordinates of the center of the field based on the center point
         square_x = [(Z.min(axis=0)[0] + mean[0]) / 2,
@@ -346,15 +346,15 @@ def get_metrics(h5_file, video):
                     ( Z.min(axis=0)[1] + mean[1]) / 2]#repeat last point to close the square
 
         #plot the center sqaure
-        
+
         plt.plot((square_x), (square_y), 'k-')
         plt.plot((square_x), (square_y), 'ko')
-        
+
         #plot all the frames that are inside the center square
-        
+
         plt.plot(x[x > square_x[0]][x < square_x[1]][y > square_y[0]][y < square_y[2]],y[x > square_x[0]][x < square_x[1]][y > square_y[0]][y < square_y[2]], 'r.')
 
-        
+
         #now get the coordinates of the boxes at each corner of the field
         rectangle1 = plt.Rectangle(((Z.min(axis=0)[0] + mean[0] )/ 2,( Z.min(axis=0)[1] + mean[1]) / 2), 50, 50, fc='g', angle=180, alpha=.7)
 
@@ -394,31 +394,31 @@ def get_metrics(h5_file, video):
 
     #     plt.gca().invert_yaxis() #we do not need it anymore, since I am plotting a frame with plt.imshow
                                    #it takes care of putting y axis to real orientation
-        
+
         #####################################################################################################
         #get a frame and put it as background
 
         cap = cv2.VideoCapture(video)
         success,image = cap.read()
         plt.imshow(image)
-        
+
         plt.savefig('%s_Divisions.png' % (filename_without_ext))
         divisions = os.path.abspath(glob.glob('*_Divisions.png')[0])
         ######################################################################################################
-        
+
         #use the number of frames to get the time spent in each corner
         sec_in_corner1 = len(x[x < rect1_xy[0]][y < rect1_xy[1]]) / fps
         sec_in_corner2 = len(x[x > rect2_xy[0]][y < rect2_xy[1]]) / fps
         sec_in_corner3 = len(x[x > rect3_xy[0]][y > rect3_xy[1]]) / fps
         sec_in_corner4 = len(x[x < rect4_xy[0]][y > rect4_xy[1]]) / fps
-        
+
         #the same with the center
-         
+
         sec_in_center = len(x[x > square_x[0]][x < square_x[1]][y > square_y[0]][y < square_y[2]]) / fps
         percent_in_center = (sec_in_center * fps) / len(x)
-        
+
         #the same with the corners
-        
+
         total_time_in_corners = sec_in_corner1 + sec_in_corner2 + sec_in_corner3 + sec_in_corner4
         percent_in_corners = (total_time_in_corners * fps) / len(x)
         #ratio
@@ -428,13 +428,13 @@ def get_metrics(h5_file, video):
         ########################################################################################################
                 #write to a csv file
         import csv
-        
+
         csvRow = [filename_without_ext, fps, total_distance, velocity, sec_in_center, percent_in_center,
                    total_time_in_corners, percent_in_corners, center_corners_ratio]
 
 
         csvfile = filename_without_ext + 'metrics.csv'
-        
+
         with open(csvfile, "a") as fp:
             wr = csv.writer(fp, dialect='excel')
             wr.writerow(['filename_without_ext', 'fps', 'total_distance', 'velocity', 'sec_in_center', 'percent_in_center',
@@ -442,17 +442,17 @@ def get_metrics(h5_file, video):
 
             wr.writerow(csvRow)
 
-        csv_output = os.path.abspath(glob.glob('*.csv')[0]) 
+        csv_output = os.path.abspath(glob.glob('*.csv')[0])
 
 
         print ('Total time spent in the center: %0.4f seconds'%sec_in_center)
         print ('Percent time spent in the center: %0.4f'%percent_in_center)
-        
+
         print ('Total time spent in the 4 corners: %0.4f seconds'%total_time_in_corners)
         print ('Percent time spent in the corners: %0.4f'%percent_in_corners)
-        
+
         print ('Center to Corners ratio is: %0.4f' %center_corners_ratio)
-        
+
         return divisions, csv_output
 
 get_metrics = Node(name = 'Get_Metrics',
@@ -484,7 +484,7 @@ Open_Field_workflow.connect ([
       (draw_density_map, datasink, [('density_map','@density_map')]),
 
 
-      (deeplabcut, get_metrics, [('h5_file','h5_file')]), 
+      (deeplabcut, get_metrics, [('h5_file','h5_file')]),
 
       (selectfiles, get_metrics, [('open_field','video')]),
 
@@ -496,4 +496,3 @@ Open_Field_workflow.connect ([
 Open_Field_workflow.write_graph(graph2use='flat')
 # Open_Field_workflow.run('MultiProc', plugin_args={'n_procs': 16})
 Open_Field_workflow.run(plugin='SLURM',plugin_args={'dont_resubmit_completed_jobs': True, 'max_jobs':50, 'sbatch_args': '-p gpu'})
-
